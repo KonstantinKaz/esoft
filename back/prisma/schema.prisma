@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  REALTOR
+  CLIENT
+}
+
+model User {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @map("updated_at")
+  
+  password    String
+  role        Role
+
+
+  clientProfile   ClientProfile?
+  realtorProfile  RealtorProfile?
+  adminProfile    AdminProfile?
+}
+
+model ClientProfile {
+  firstName String?
+  lastName  String?
+  
+  phone     String?  @unique
+  email     String?  @unique
+
+
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @unique
+
+  @@map("client_profile")
+}
+
+model RealtorProfile {
+  firstName String
+  lastName  String
+  middleName String
+
+  phone     String   @unique
+  email     String   @unique
+  
+  commission Float
+  
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @unique
+
+  @@map("realtor_profile")
+}
+
+model AdminProfile {
+  firstName String
+  lastName  String
+
+  phone       String  @unique
+  email       String  @unique
+  
+  // Связь с основной моделью User
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @unique
+
+  @@map("admin_profile")
+}
+
+

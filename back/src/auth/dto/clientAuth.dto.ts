@@ -1,22 +1,23 @@
 import { IsString, MinLength } from 'class-validator'
+import { Role } from '@prisma/client'
 
-export class AuthUserDto {
-	@IsString()
-	firstName?: string
+// export class AuthUserDto {
+// 	@IsString()
+// 	firstName?: string
 
-	@IsString()
-	lastName?: string
+// 	@IsString()
+// 	lastName?: string
 
-	@IsString()
-	email?: string
+// 	@IsString()
+// 	email?: string
 
-	@IsString()
-	phone?: string
+// 	@IsString()
+// 	phone?: string
 
-	@MinLength(6, { message: 'Password cannot be less than 6 characters' })
-	@IsString()
-	password: string
-}
+// 	@MinLength(6, { message: 'Password cannot be less than 6 characters' })
+// 	@IsString()
+// 	password: string
+// }
 
 export class AuthClientDto {
 	@IsString()
@@ -26,6 +27,8 @@ export class AuthClientDto {
 	lastName?: string
 
 	@IsString()
+	middleName?: string
+	@IsString()
 	email?: string
 
 	@IsString()
@@ -34,6 +37,9 @@ export class AuthClientDto {
 	@MinLength(6, { message: 'Password cannot be less than 6 characters' })
 	@IsString()
 	password: string
+
+	@IsString()
+	UserRole: Role
 }
 
 export class AuthRealtorDto {
@@ -44,6 +50,8 @@ export class AuthRealtorDto {
 	lastName: string
 
 	@IsString()
+	middleName: string
+	@IsString()
 	email: string
 
 	@IsString()
@@ -52,4 +60,7 @@ export class AuthRealtorDto {
 	@MinLength(6, { message: 'Password cannot be less than 6 characters' })
 	@IsString()
 	password: string
+
+	@IsString()
+	UserRole: Role
 }

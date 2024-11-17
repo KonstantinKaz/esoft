@@ -28,11 +28,12 @@ model User {
 }
 
 model ClientProfile {
-  firstName String?
-  lastName  String?
+  firstName String? @map("first_name")
+  lastName  String? @map("last_name")
+  middleName String? @map("middle_name")
   
-  phone     String?  @unique
-  email     String?  @unique
+  phone     String?  @unique 
+  email     String?  @unique 
 
 
   user      User     @relation(fields: [userId], references: [id])
@@ -42,13 +43,13 @@ model ClientProfile {
 }
 
 model RealtorProfile {
-  firstName String
-  lastName  String
-  middleName String
+  firstName String @map("first_name")
+  lastName  String @map("last_name")
+  middleName String @map("middle_name")
 
   phone     String   @unique
   email     String   @unique
-  
+
   commission Float
   
   user      User     @relation(fields: [userId], references: [id])
@@ -58,10 +59,10 @@ model RealtorProfile {
 }
 
 model AdminProfile {
-  firstName String
-  lastName  String
+  firstName String @map("first_name")
+  lastName  String @map("last_name")
 
-  phone       String  @unique
+  phone       String  @unique 
   email       String  @unique
   
   // Связь с основной моделью User
@@ -69,6 +70,75 @@ model AdminProfile {
   userId    String   @unique
 
   @@map("admin_profile")
+}
+
+enum EstateType {
+  APARTMENT
+  HOUSE
+  LAND
+}
+
+model Estate {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+  
+  type      EstateType
+
+  city      String?
+  street    String?
+  house     String?
+  apartment String?
+
+  latitude  Float?  @db.DoublePrecision
+  longitude Float?  @db.DoublePrecision
+
+  apartmentData Apartment?
+  houseData     House?
+  landData      Land?
+  offers    Offer[]
+
+  @@map("estate")
+}
+
+model Apartment {
+  floor        Int?
+  rooms        Int?
+  totalArea    Float?     @map("total_area")
+  
+  estate      Estate     @relation(fields: [estateId], references: [id], onDelete: Cascade)
+  estateId    String     @unique @map("estate_id")
+
+  @@map("apartments")
+}
+
+model House {
+  floors      Int?
+  rooms       Int?
+  totalArea   Float?     @map("total_area")
+  
+  estate      Estate     @relation(fields: [estateId], references: [id], onDelete: Cascade)
+  estateId    String     @unique @map("estate_id")
+
+  @@map("houses")
+}
+
+model Land {
+  totalArea   Float?     @map("total_area")
+  
+  estate      Estate     @relation(fields: [estateId], references: [id], onDelete: Cascade)
+  estateId    String     @unique @map("estate_id")
+
+  @@map("lands")
+}
+
+// Модель для предложений (чтобы реализовать проверку при удалении)
+model Offer {
+  id            String     @id @default(cuid())
+  Estate    Estate @relation(fields: [EstateId], references: [id])
+  EstateId  String     @map("estate_id")
+
+  @@map("offers")
 }
 
 

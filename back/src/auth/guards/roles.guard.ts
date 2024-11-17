@@ -5,7 +5,7 @@ import {
 	Injectable,
 } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
-import { Role } from '@prisma/client' // Импортируйте Role из Prisma, если необходимо
+import { Role } from '@prisma/client'
 import { UserService } from 'src/user/user.service'
 
 @Injectable()
@@ -21,11 +21,11 @@ export class RolesGuard implements CanActivate {
 			context.getHandler()
 		)
 		if (!requiredRoles) {
-			return true // Если роли не указаны, разрешаем доступ
+			return true
 		}
 
 		const request = context.switchToHttp().getRequest()
-		const user = request.user // Предполагается, что пользователь добавляется в request после аутентификации
+		const user = request.user
 
 		if (!user || !requiredRoles.includes(user.role)) {
 			throw new ForbiddenException('У вас нет прав доступа к этому ресурсу')

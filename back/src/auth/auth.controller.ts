@@ -1,6 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { AuthClientDto, AuthRealtorDto } from './dto/clientAuth.dto'
+import { get } from 'http'
 
 @Controller('auth')
 export class AuthController {
@@ -16,5 +17,10 @@ export class AuthController {
 	// @Auth('REALTOR', 'CLIENT')
 	async registerRealtor(@Body() authRealtorDto: AuthRealtorDto) {
 		return this.authService.createRealtor(authRealtorDto)
+	}
+
+	@Post('login')
+	async login(@Body() dto: AuthClientDto | AuthRealtorDto) {
+		return this.authService.login(dto)
 	}
 }

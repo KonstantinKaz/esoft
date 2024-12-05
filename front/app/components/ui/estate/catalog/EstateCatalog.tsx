@@ -8,7 +8,7 @@ import Description from '../../heading/Description'
 import Heading from '../../heading/Heading'
 
 interface IEstateCatalog {
-	title: string
+	title?: string
 	description?: string
 	estates?: IEstate[]
 	isBackButton?: boolean

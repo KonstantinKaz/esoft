@@ -1,0 +1,60 @@
+import { useTypedNavigation } from '@/hooks/useTypedNavigation'
+import { IUser } from '@/shared/types/user.interface'
+import { MaterialIcons } from '@expo/vector-icons'
+import { FC } from 'react'
+import { Pressable, Text, View } from 'react-native'
+
+interface IUserItem extends IUser {
+	onDelete: () => void
+}
+
+const UserItem: FC<IUserItem> = ({
+	id,
+	role,
+	clientProfile,
+	realtorProfile,
+	onDelete
+}) => {
+	const { navigate } = useTypedNavigation()
+	const profile = role === 'REALTOR' ? realtorProfile : clientProfile
+
+	return (
+		<View className='bg-[#222222] p-4 rounded-xl mb-4'>
+			<View className='flex-row justify-between items-center mb-2'>
+				<View className='flex-1 mr-2'>
+					<Text className='text-white text-lg font-medium'>
+						{profile?.lastName} {profile?.firstName} {profile?.middleName}
+					</Text>
+				</View>
+				<View className='flex-row items-center'>
+					<Pressable
+						onPress={() => navigate('UserEdit', { id })}
+						className='mr-3'
+					>
+						<MaterialIcons name='edit' size={20} color='white' />
+					</Pressable>
+					<Pressable onPress={onDelete}>
+						<MaterialIcons name='delete' size={20} color='#FF4B4B' />
+					</Pressable>
+				</View>
+			</View>
+
+			{profile && (
+				<View>
+					<Text className='text-gray-400 text-base'>
+						Email: {profile.email}
+					</Text>
+					<Text className='text-gray-400 text-base mt-1'>
+						Телефон: {profile.phone}
+					</Text>
+				</View>
+			)}
+
+			<Text className='text-white opacity-70 text-sm mt-2'>
+				{role === 'CLIENT' ? 'Клиент' : 'Риэлтор'}
+			</Text>
+		</View>
+	)
+}
+
+export default UserItem

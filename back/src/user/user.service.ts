@@ -77,12 +77,47 @@ export class UserService {
 		})
 	}
 
-	async getUsers() {
+	async getAll(searchTerm?: string) {
 		return this.prisma.user.findMany({
-			select: {
-				id: true,
-				role: true,
-				password: false,
+			where: searchTerm
+				? {
+						OR: [
+							{
+								clientProfile: {
+									OR: [
+										{
+											firstName: { contains: searchTerm, mode: 'insensitive' },
+										},
+										{
+											lastName: { contains: searchTerm, mode: 'insensitive' },
+										},
+										{
+											email: { contains: searchTerm, mode: 'insensitive' },
+										},
+									],
+								},
+							},
+							{
+								realtorProfile: {
+									OR: [
+										{
+											firstName: { contains: searchTerm, mode: 'insensitive' },
+										},
+										{
+											lastName: { contains: searchTerm, mode: 'insensitive' },
+										},
+										{
+											email: { contains: searchTerm, mode: 'insensitive' },
+										},
+									],
+								},
+							},
+						],
+				  }
+				: {},
+			include: {
+				clientProfile: true,
+				realtorProfile: true,
 			},
 		})
 	}
@@ -170,48 +205,60 @@ export class UserService {
 	}
 
 	async fuzzySearch(searchQuery: {
-		firstName?: string;
-		lastName?: string;
-		middleName?: string;
+		firstName?: string
+		lastName?: string
+		middleName?: string
 	}) {
 		const users = await this.prisma.user.findMany({
 			include: {
 				clientProfile: true,
 				realtorProfile: true,
 			},
-		});
+		})
 
-		return users.filter(user => {
-			const profile = user.clientProfile || user.realtorProfile;
-			if (!profile) return false;
+		return users.filter((user) => {
+			const profile = user.clientProfile || user.realtorProfile
+			if (!profile) return false
 
 			const isMatchingName = (searchField?: string, profileField?: string) => {
-				if (!searchField) return true;
-				if (!profileField) return false;
+				if (!searchField) return true
+				if (!profileField) return false
 
 				const distance = levenshtein(
 					searchField.toLowerCase(),
 					profileField.toLowerCase()
-				);
-				
-				console.log(`Comparing "${searchField}" with "${profileField}": distance = ${distance}`);
-				
-				return distance <= 3;
-			};
+				)
 
-			const firstNameMatch = isMatchingName(searchQuery.firstName, profile.firstName);
-			const lastNameMatch = isMatchingName(searchQuery.lastName, profile.lastName);
-			const middleNameMatch = isMatchingName(searchQuery.middleName, profile.middleName);
+				console.log(
+					`Comparing "${searchField}" with "${profileField}": distance = ${distance}`
+				)
 
-			const hasMatch = (searchQuery.firstName ? firstNameMatch : true) &&
-							(searchQuery.lastName ? lastNameMatch : true) &&
-							(searchQuery.middleName ? middleNameMatch : true);
-
-			if (hasMatch) {
-				console.log('Found matching profile:', profile);
+				return distance <= 3
 			}
 
-			return hasMatch;
-		});
+			const firstNameMatch = isMatchingName(
+				searchQuery.firstName,
+				profile.firstName
+			)
+			const lastNameMatch = isMatchingName(
+				searchQuery.lastName,
+				profile.lastName
+			)
+			const middleNameMatch = isMatchingName(
+				searchQuery.middleName,
+				profile.middleName
+			)
+
+			const hasMatch =
+				(searchQuery.firstName ? firstNameMatch : true) &&
+				(searchQuery.lastName ? lastNameMatch : true) &&
+				(searchQuery.middleName ? middleNameMatch : true)
+
+			if (hasMatch) {
+				console.log('Found matching profile:', profile)
+			}
+
+			return hasMatch
+		})
 	}
 }

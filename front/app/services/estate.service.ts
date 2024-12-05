@@ -1,5 +1,7 @@
+import { ISearchFormData } from '@/components/screens/search/search.interface'
 import { getEstatesUrl } from '@/config/api.config'
 import { request } from '@/services/api/request.api'
+import { Control } from 'react-hook-form'
 
 interface IApartmentData {
 	floor?: number
@@ -29,6 +31,7 @@ export interface IEstate {
 	apartmentData?: IApartmentData
 	houseData?: IHouseData
 	landData?: ILandData
+	control: Control<ISearchFormData>
 }
 
 export interface IEstateSearch {

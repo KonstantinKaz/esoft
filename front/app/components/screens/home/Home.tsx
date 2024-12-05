@@ -1,11 +1,11 @@
-import { FC } from 'react'
-import { View, Text, Pressable } from 'react-native'
-import { Ionicons } from '@expo/vector-icons'
+import EstateCatalog from '@/components/ui/estate/catalog/EstateCatalog'
 import Layout from '@/components/ui/layout/Layout'
 import Loader from '@/components/ui/Loader'
-import EstateCatalog from '@/components/ui/estate/catalog/EstateCatalog'
-import { useGetAllEstate } from './useGetAllEstate'
 import { useTypedNavigation } from '@/hooks/useTypedNavigation'
+import { Ionicons } from '@expo/vector-icons'
+import { FC } from 'react'
+import { Pressable, Text, View } from 'react-native'
+import { useGetAllEstate } from './useGetAllEstate'
 
 const Home: FC = () => {
 	const { estates, isLoading } = useGetAllEstate()
@@ -21,7 +21,7 @@ const Home: FC = () => {
 					<Ionicons name='add-circle' size={32} color='white' />
 				</Pressable>
 			</View>
-			<EstateCatalog estates={estates} title='Недвижимость' />
+			<EstateCatalog estates={estates} />
 		</Layout>
 	)
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common'
 import { Auth } from 'src/auth/decorators/auth.decorator'
 import { AuthClientDto } from 'src/auth/dto/clientAuth.dto'
 
@@ -9,9 +9,9 @@ import { UserService } from './user.service'
 export class UserController {
 	constructor(private readonly userService: UserService) {}
 
-	@Get('')
-	async getUsers() {
-		return this.userService.getUsers()
+	@Get()
+	async getAll(@Query('searchTerm') searchTerm?: string) {
+		return this.userService.getAll(searchTerm)
 	}
 
 	@Get(':email')
@@ -24,7 +24,7 @@ export class UserController {
 		return this.userService.getProfile(id)
 	}
 
-	@Delete('delete/:id')
+	@Delete(':id')
 	// @Auth('CLIENT', 'REALTOR')
 	async deleteUser(@Param('id') id: string) {
 		return this.userService.deleteUser(id)

@@ -17,6 +17,7 @@ export type TypeRootStackParamList = {
 	EstateEdit: {
 		id: string
 	}
+	EstateAdd: undefined
 } & TypeRootStackAdminList
 
 type TypeRootStackAdminList = {

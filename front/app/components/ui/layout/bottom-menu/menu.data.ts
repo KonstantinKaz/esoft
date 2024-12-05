@@ -19,6 +19,6 @@ export const menuItems: IMenuItem[] = [
 	},
 	{
 		iconName: 'user',
-		path: 'Profile'
+		path: 'UserList'
 	}
 ]

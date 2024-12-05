@@ -1,9 +1,28 @@
-export interface IUser {
-	_id: string
-	email: string
-	password: string
-	createdAt: string
-	isAdmin: boolean
+export interface IClientProfile {
+	firstName?: string
+	lastName?: string
+	middleName?: string
+	phone?: string
+	email?: string
 }
 
-export interface IUserEditInput extends Omit<IUser, '_id' | 'createdAt'> {}
+export interface IRealtorProfile {
+	firstName: string
+	lastName: string
+	middleName: string
+	phone: string
+	email: string
+	commission: number
+}
+
+export interface IUser {
+	id: string
+	role: 'ADMIN' | 'REALTOR' | 'CLIENT'
+	clientProfile?: IClientProfile
+	realtorProfile?: IRealtorProfile
+	createdAt: string
+}
+
+export interface IUserEditInput extends Omit<IUser, 'id'> {
+	password?: string
+}

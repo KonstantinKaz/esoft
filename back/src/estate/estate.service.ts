@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { EstateType } from '@prisma/client'
 import { levenshtein } from 'src/utils/levenshtein'
 import { PrismaService } from '../prisma.service'
@@ -244,5 +244,22 @@ export class EstateService {
 		}
 
 		return inside
+	}
+
+	async getById(id: string) {
+		const estate = await this.prisma.estate.findUnique({
+			where: { id },
+			include: {
+				apartmentData: true,
+				houseData: true,
+				landData: true,
+			},
+		})
+
+		if (!estate) {
+			throw new NotFoundException('Объект недвижимости не найден')
+		}
+
+		return estate
 	}
 }

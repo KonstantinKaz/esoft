@@ -40,4 +40,9 @@ export class EstateController {
 	async searchEstates(@Body() searchParams: EstateSearchDto) {
 		return this.estateService.searchEstates(searchParams);
 	}
+
+	@Get(':id')
+	async getById(@Param('id') id: string) {
+		return this.estateService.getById(id)
+	}
 }

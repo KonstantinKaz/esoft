@@ -5,11 +5,11 @@ import { AuthClientDto } from 'src/auth/dto/clientAuth.dto'
 import { SearchUserDto } from './dto/search-user.dto'
 import { UserService } from './user.service'
 
-@Controller('user')
+@Controller('users')
 export class UserController {
 	constructor(private readonly userService: UserService) {}
 
-	@Get('get-all')
+	@Get('')
 	async getUsers() {
 		return this.userService.getUsers()
 	}
@@ -20,19 +20,17 @@ export class UserController {
 	}
 
 	@Get('profile/:id')
-	@Auth('CLIENT', 'REALTOR')
 	async getProfile(@Param('id') id: string) {
 		return this.userService.getProfile(id)
 	}
 
 	@Delete('delete/:id')
-	@Auth('CLIENT', 'REALTOR')
+	// @Auth('CLIENT', 'REALTOR')
 	async deleteUser(@Param('id') id: string) {
 		return this.userService.deleteUser(id)
 	}
 
 	@Put('update/:id')
-	@Auth('CLIENT', 'REALTOR')
 	async updateUser(@Param('id') id: string, @Body() data: AuthClientDto) {
 		return this.userService.updateUser(id, data)
 	}

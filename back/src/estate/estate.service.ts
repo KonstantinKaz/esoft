@@ -21,25 +21,25 @@ export class EstateService {
 				...(type === EstateType.APARTMENT && {
 					apartmentData: {
 						create: {
-							floor,
-							rooms,
-							totalArea,
+							floor: floor ? Number(floor) : null,
+							rooms: rooms ? Number(rooms) : null,
+							totalArea: totalArea ? Number(totalArea) : null,
 						},
 					},
 				}),
 				...(type === EstateType.HOUSE && {
 					houseData: {
 						create: {
-							floors,
-							rooms,
-							totalArea,
+							floors: floors ? Number(floors) : null,
+							rooms: rooms ? Number(rooms) : null,
+							totalArea: totalArea ? Number(totalArea) : null,
 						},
 					},
 				}),
 				...(type === EstateType.LAND && {
 					landData: {
 						create: {
-							totalArea,
+							totalArea: totalArea ? Number(totalArea) : null,
 						},
 					},
 				}),
@@ -52,45 +52,37 @@ export class EstateService {
 		})
 	}
 
-	async updateEstate(id: string, data: Partial<EstateDto>) {
+	async updateEstate(id: string, data: EstateDto) {
+		const { floor, rooms, totalArea, floors, ...estateData } = data
+
 		const estate = await this.prisma.estate.findUnique({
 			where: { id },
 			include: {
-				offers: true,
 				apartmentData: true,
 				houseData: true,
 				landData: true,
 			},
 		})
 
-		if (!estate) {
-			throw new Error('Объект недвижимости не найден')
-		}
-
-		if (estate.offers.length > 0) {
-			throw new Error(
-				'Нельзя обновить объект недвижимости, связанный с предложением'
-			)
-		}
-
-		const { floor, rooms, totalArea, floors, ...estateData } = data
+		if (!estate) throw new NotFoundException('Estate not found')
 
 		return this.prisma.estate.update({
 			where: { id },
 			data: {
 				...estateData,
+				type: estate.type,
 				...(estate.type === EstateType.APARTMENT && {
 					apartmentData: {
 						upsert: {
 							create: {
-								floor,
-								rooms,
-								totalArea,
+								floor: floor ? Number(floor) : null,
+								rooms: rooms ? Number(rooms) : null,
+								totalArea: totalArea ? Number(totalArea) : null,
 							},
 							update: {
-								...(floor !== undefined && { floor }),
-								...(rooms !== undefined && { rooms }),
-								...(totalArea !== undefined && { totalArea }),
+								floor: floor ? Number(floor) : null,
+								rooms: rooms ? Number(rooms) : null,
+								totalArea: totalArea ? Number(totalArea) : null,
 							},
 						},
 					},
@@ -99,14 +91,14 @@ export class EstateService {
 					houseData: {
 						upsert: {
 							create: {
-								floors,
-								rooms,
-								totalArea,
+								floors: floors ? Number(floors) : null,
+								rooms: rooms ? Number(rooms) : null,
+								totalArea: totalArea ? Number(totalArea) : null,
 							},
 							update: {
-								...(floors !== undefined && { floors }),
-								...(rooms !== undefined && { rooms }),
-								...(totalArea !== undefined && { totalArea }),
+								floors: floors ? Number(floors) : null,
+								rooms: rooms ? Number(rooms) : null,
+								totalArea: totalArea ? Number(totalArea) : null,
 							},
 						},
 					},
@@ -115,10 +107,10 @@ export class EstateService {
 					landData: {
 						upsert: {
 							create: {
-								totalArea,
+								totalArea: totalArea ? Number(totalArea) : null,
 							},
 							update: {
-								...(totalArea !== undefined && { totalArea }),
+								totalArea: totalArea ? Number(totalArea) : null,
 							},
 						},
 					},
@@ -144,7 +136,7 @@ export class EstateService {
 
 		if (estate.offers.length > 0) {
 			throw new Error(
-				'Нельзя удалить объект недвижимости, связанный с предложением'
+				'Нельзя удалить объект недвижимоси, связанный с предложением'
 			)
 		}
 
@@ -157,7 +149,9 @@ export class EstateService {
 		return this.prisma.estate.findMany({
 			where: {
 				...filter,
-				type: filter.type,
+				...(filter.type && {
+					type: filter.type.toUpperCase() as EstateType
+				})
 			},
 			include: {
 				apartmentData: true,
@@ -177,7 +171,7 @@ export class EstateService {
 		})
 
 		return estates.filter((estate) => {
-			// Проверка на соответствие адреса
+			// Проверка на сответствие адреса
 			if (
 				searchParams.city ||
 				searchParams.street ||

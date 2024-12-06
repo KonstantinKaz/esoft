@@ -14,7 +14,12 @@ export class UserController {
 		return this.userService.getAll(searchTerm)
 	}
 
-	@Get(':email')
+	@Get('by-id/:id')
+	async getById(@Param('id') id: string) {
+		return this.userService.getById(id)
+	}
+
+	@Get('by-email/:email')
 	async getEmail(@Param('email') email: string) {
 		return this.userService.getEmail(email)
 	}
@@ -32,6 +37,7 @@ export class UserController {
 
 	@Put('update/:id')
 	async updateUser(@Param('id') id: string, @Body() data: AuthClientDto) {
+		console.log('Updating user:', id, data)
 		return this.userService.updateUser(id, data)
 	}
 

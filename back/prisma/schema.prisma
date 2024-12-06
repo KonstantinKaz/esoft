@@ -88,7 +88,6 @@ model Estate {
   city      String?
   street    String?
   house     String?
-  apartment String?
 
   latitude  Float?  @db.DoublePrecision
   longitude Float?  @db.DoublePrecision
@@ -102,6 +101,7 @@ model Estate {
 }
 
 model Apartment {
+  apartment String?
   floor        Int?
   rooms        Int?
   totalArea    Float?     @map("total_area")

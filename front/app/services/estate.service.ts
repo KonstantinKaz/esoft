@@ -52,18 +52,52 @@ export const EstateService = {
 	},
 
 	async create(data: IEstate) {
+		const { apartmentData, houseData, landData, ...estateData } = data
+		const payload = {
+			...estateData,
+			...(data.type === 'APARTMENT' && apartmentData && {
+				floor: apartmentData.floor,
+				rooms: apartmentData.rooms,
+				totalArea: apartmentData.totalArea
+			}),
+			...(data.type === 'HOUSE' && houseData && {
+				floors: houseData.floors,
+				rooms: houseData.rooms,
+				totalArea: houseData.totalArea
+			}),
+			...(data.type === 'LAND' && landData && {
+				totalArea: landData.totalArea
+			})
+		}
 		return request({
 			url: getEstatesUrl('create'),
 			method: 'POST',
-			data
+			data: payload
 		})
 	},
 
 	async update(id: string, data: Partial<IEstate>) {
+		const { apartmentData, houseData, landData, ...estateData } = data
+		const payload = {
+			...estateData,
+			...(data.type === 'APARTMENT' && apartmentData && {
+				floor: Number(apartmentData.floor),
+				rooms: Number(apartmentData.rooms),
+				totalArea: apartmentData.totalArea ? Number(apartmentData.totalArea) : null
+			}),
+			...(data.type === 'HOUSE' && houseData && {
+				floors: Number(houseData.floors),
+				rooms: Number(houseData.rooms),
+				totalArea: houseData.totalArea ? Number(houseData.totalArea) : null
+			}),
+			...(data.type === 'LAND' && landData && {
+				totalArea: landData.totalArea ? Number(landData.totalArea) : null
+			})
+		}
 		return request({
 			url: getEstatesUrl(`update/${id}`),
 			method: 'PUT',
-			data
+			data: payload
 		})
 	},
 

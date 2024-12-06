@@ -35,9 +35,9 @@ export const UserService = {
 		})
 	},
 
-	async getById(_id: string) {
+	async getById(id: string) {
 		return request<IUser>({
-			url: getUsersUrl(`${_id}`),
+			url: getUsersUrl(`by-id/${id}`),
 			method: 'GET'
 		})
 	},
@@ -50,9 +50,9 @@ export const UserService = {
 		})
 	},
 
-	async update(_id: string, data: IUserEditInput) {
+	async update(id: string, data: IUserEditInput) {
 		return request<string>({
-			url: getUsersUrl(`${_id}`),
+			url: getUsersUrl(`update/${id}`),
 			method: 'PUT',
 			data
 		})

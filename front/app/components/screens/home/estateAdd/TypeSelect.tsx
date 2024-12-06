@@ -12,13 +12,15 @@ const estateTypes = [
 
 interface ITypeSelect {
     control: Control<IEstate>
+    defaultValue?: string
 }
 
-const TypeSelect: FC<ITypeSelect> = ({ control }) => {
+const TypeSelect: FC<ITypeSelect> = ({ control, defaultValue }) => {
     return (
         <Controller
             control={control}
             name='type'
+            defaultValue={defaultValue}
             rules={{ required: 'Выберите тип недвижимости' }}
             render={({ field: { value, onChange }, fieldState: { error } }) => (
                 <View>

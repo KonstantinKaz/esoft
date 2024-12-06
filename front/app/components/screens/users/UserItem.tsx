@@ -18,13 +18,25 @@ const UserItem: FC<IUserItem> = ({
 	const { navigate } = useTypedNavigation()
 	const profile = role === 'REALTOR' ? realtorProfile : clientProfile
 
+	const getName = () => {
+		if (!profile) return <Text className='text-white text-sm opacity-70'>ID: {id}</Text>
+
+		const name = [profile.lastName, profile.firstName, profile.middleName]
+			.filter(Boolean)
+			.join(' ')
+
+		return name ? (
+			<Text className='text-white text-lg font-medium'>{name}</Text>
+		) : (
+			<Text className='text-white text-sm opacity-70'>ID: {id}</Text>
+		)
+	}
+
 	return (
 		<View className='bg-[#222222] p-4 rounded-xl mb-4'>
 			<View className='flex-row justify-between items-center mb-2'>
 				<View className='flex-1 mr-2'>
-					<Text className='text-white text-lg font-medium'>
-						{profile?.lastName} {profile?.firstName} {profile?.middleName}
-					</Text>
+					{getName()}
 				</View>
 				<View className='flex-row items-center'>
 					<Pressable
@@ -41,12 +53,16 @@ const UserItem: FC<IUserItem> = ({
 
 			{profile && (
 				<View>
-					<Text className='text-gray-400 text-base'>
-						Email: {profile.email}
-					</Text>
-					<Text className='text-gray-400 text-base mt-1'>
-						Телефон: {profile.phone}
-					</Text>
+					{profile.email && (
+						<Text className='text-gray-400 text-base'>
+							Email: {profile.email}
+						</Text>
+					)}
+					{profile.phone && (
+						<Text className='text-gray-400 text-base mt-1'>
+							Телефон: {profile.phone}
+						</Text>
+					)}
 				</View>
 			)}
 

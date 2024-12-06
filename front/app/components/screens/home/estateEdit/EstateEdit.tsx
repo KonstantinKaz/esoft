@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons'
 import React, { FC } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { Pressable, ScrollView, Text, View } from 'react-native'
 
 import Button from '@/components/ui/button/Button'
@@ -10,6 +10,9 @@ import Loader from '@/components/ui/Loader'
 import { useTypedNavigation } from '@/hooks/useTypedNavigation'
 import { IEstate } from '@/services/estate.service'
 import { useEstateEdit } from './useEstateEdit'
+import ApartmentForm from '../estateAdd/ApartmentForm'
+import HouseForm from '../estateAdd/HouseForm'
+import LandForm from '../estateAdd/LandForm'
 
 const EstateEdit: FC = () => {
 	const { control, setValue, handleSubmit } = useForm<IEstate>({
@@ -17,14 +20,46 @@ const EstateEdit: FC = () => {
 	})
 
 	const { isLoading, onSubmit, estate } = useEstateEdit(setValue)
-
 	const { goBack } = useTypedNavigation()
+
+	if (isLoading) {
+		return (
+			<Layout isHasPadding>
+				<Loader />
+			</Layout>
+		)
+	}
+
+	if (!estate) {
+		return (
+			<Layout isHasPadding>
+				<Text className='text-white text-lg'>��бъект не найден</Text>
+			</Layout>
+		)
+	}
+
+	const renderEstateTypeForm = () => {
+		switch (estate.type) {
+			case 'APARTMENT':
+				return <ApartmentForm control={control} />
+			case 'HOUSE':
+				return <HouseForm control={control} />
+			case 'LAND':
+				return <LandForm control={control} />
+			default:
+				return null
+		}
+	}
 
 	return (
 		<Layout isHasPadding>
-			<View className='flex-row items-center'>
+			<View className='flex-row items-center mb-6'>
 				<Pressable onPress={goBack} className='mr-3'>
-					<Ionicons name='arrow-back-circle-outline' size={32} color='white' />
+					<Ionicons
+						name='arrow-back-circle-outline'
+						size={32}
+						color='white'
+					/>
 				</Pressable>
 				<Text className='text-white text-2xl font-semibold'>
 					{estate.type === 'APARTMENT'
@@ -34,40 +69,45 @@ const EstateEdit: FC = () => {
 							: 'Участок'}
 				</Text>
 			</View>
-			<View>
-				{isLoading ? (
-					<Loader />
-				) : (
-					<ScrollView showsVerticalScrollIndicator={false}>
-						<Field<IEstate> control={control} name='city' placeholder='Город' />
-						<Field<IEstate>
-							control={control}
-							name='street'
-							placeholder='Улица'
-						/>
-						<Field<IEstate> control={control} name='house' placeholder='Дом' />
-						<Field<IEstate>
-							control={control}
-							name='apartment'
-							placeholder='Квартира'
-						/>
 
-						<Controller
-							control={control}
-							name='type'
-							render={({ field: { value, onChange } }) => (
-								<View>
-									{/* Здесь можно добавить селектор типа недвижимости */}
-								</View>
-							)}
-						/>
+			<ScrollView showsVerticalScrollIndicator={false}>
+				<Field
+					control={control}
+					name='city'
+					placeholder='Город'
+					defaultValue={estate.city}
+				/>
+				<Field
+					control={control}
+					name='street'
+					placeholder='Улица'
+					defaultValue={estate.street}
+				/>
+				<Field
+					control={control}
+					name='house'
+					placeholder='Дом'
+					defaultValue={estate.house}
+				/>
+				<Field
+					control={control}
+					name='apartment'
+					placeholder='Квартира'
+					defaultValue={estate.apartment}
+				/>
 
-						<Button onPress={handleSubmit(onSubmit)} icon='pen-tool'>
-							Update
-						</Button>
-					</ScrollView>
-				)}
-			</View>
+				{renderEstateTypeForm()}
+
+				<Button 
+					onPress={handleSubmit((formData) => {
+						console.log('Form data before submit:', formData)
+						onSubmit(formData)
+					})} 
+					icon='pen-tool'
+				>
+					Обновить
+				</Button>
+			</ScrollView>
 		</Layout>
 	)
 }

@@ -3,10 +3,12 @@ import Field from '@/components/ui/form/field/Field'
 import Layout from '@/components/ui/layout/Layout'
 import Loader from '@/components/ui/Loader'
 import { IEstate } from '@/services/estate.service'
+import { Ionicons } from '@expo/vector-icons'
 import React, { FC } from 'react'
 import { useForm } from 'react-hook-form'
-import { ScrollView, View } from 'react-native'
+import { Pressable, ScrollView, Text, View } from 'react-native'
 import { useEstateAdd } from '../useEstateAdd'
+import { useTypedNavigation } from '@/hooks/useTypedNavigation'
 import ApartmentForm from './ApartmentForm'
 import HouseForm from './HouseForm'
 import LandForm from './LandForm'
@@ -17,6 +19,7 @@ const EstateAdd: FC = () => {
 		mode: 'onChange'
 	})
 	const { onSubmit, isLoading } = useEstateAdd()
+	const { goBack } = useTypedNavigation()
 
 	const estateType = watch('type')
 
@@ -35,6 +38,19 @@ const EstateAdd: FC = () => {
 
 	return (
 		<Layout isHasPadding>
+			<View className='flex-row items-center mb-6'>
+				<Pressable onPress={goBack} className='mr-3'>
+					<Ionicons
+						name='arrow-back-circle-outline'
+						size={32}
+						color='white'
+					/>
+				</Pressable>
+				<Text className='text-white text-2xl font-semibold'>
+					Добавить объект
+				</Text>
+			</View>
+
 			<View>
 				{isLoading ? (
 					<Loader />

@@ -29,6 +29,7 @@ model User {
   realtorOffers   Offer[] @relation("RealtorOffers")
   clientDemands   Demand[] @relation("ClientDemands")
   realtorDemands  Demand[] @relation("RealtorDemands")
+  events      Event[]   @relation("RealtorEvents")
 }
 
 model ClientProfile {
@@ -198,6 +199,28 @@ model Demand {
   realtorId String   @map("realtor_id")
 
   @@map("demands")
+}
+
+enum EventType {
+  CLIENT_MEETING
+  SHOWING
+  SCHEDULED_CALL
+}
+
+model Event {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @map("updated_at")
+  
+  dateTime    DateTime  @map("date_time")
+  duration    Int?      // в минутах
+  type        EventType
+  comment     String?
+  
+  realtor     User      @relation("RealtorEvents", fields: [realtorId], references: [id])
+  realtorId   String    @map("realtor_id")
+
+  @@map("events")
 }
 
 

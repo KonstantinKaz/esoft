@@ -9,6 +9,8 @@ export type TypeRootStackParamList = {
 	Offers: undefined
 	OfferList: undefined
 	OfferAdd: undefined
+	UserEdit: { id: string }
+	UserList: undefined
 	OfferEdit: { id: string }
 	Estate: {
 		id: string
@@ -22,18 +24,17 @@ export type TypeRootStackParamList = {
 	DemandEdit: {
 		id: string
 	}
+	EventList: undefined
+	EventAdd: undefined
+	Estates: undefined
+	EventEdit: {
+		id: string
+	}
+	EventsToday: undefined
 } & TypeRootStackAdminList
 
 type TypeRootStackAdminList = {
 	Admin: undefined
-	ActorEdit: { id: string }
-	ActorList: undefined
-	MovieEdit: { id: string }
-	MovieList: undefined
-	GenreEdit: { id: string }
-	GenreList: undefined
-	UserEdit: { id: string }
-	UserList: undefined
 }
 
 export interface IRoute {

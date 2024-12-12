@@ -1,9 +1,8 @@
-import { applyDecorators, UseGuards } from '@nestjs/common'
-import { JwtAuthGuard } from '../guards/jwt.guard'
+import { UseGuards, applyDecorators } from '@nestjs/common'
+import { AuthGuard } from '@nestjs/passport'
+import { RoleGuard } from '../guards/role.guard'
 
-import { RolesGuard } from '../guards/roles.guard'
-import { Roles } from './roles.decorator'
-
-export const Auth = (...roles: string[]) => {
-	return applyDecorators(Roles(...roles), UseGuards(JwtAuthGuard, RolesGuard))
-}
+export const Auth = (roles: ('ADMIN' | 'REALTOR' | 'CLIENT')[] = ['ADMIN', 'REALTOR']) =>
+  applyDecorators(
+    UseGuards(AuthGuard('jwt'), new RoleGuard(roles))
+  )

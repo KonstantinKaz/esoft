@@ -9,7 +9,7 @@ import Search from '@/components/ui/search/Search'
 import { useSearch } from '@/components/ui/search/useSearch'
 import { useTypedNavigation } from '@/hooks/useTypedNavigation'
 
-const Home: FC = () => {
+const Estates: FC = () => {
 	const { navigate } = useTypedNavigation()
 	const { control, searchResults: estates, isLoading } = useSearch(false)
 
@@ -29,4 +29,4 @@ const Home: FC = () => {
 	)
 }
 
-export default Home
+export default Estates

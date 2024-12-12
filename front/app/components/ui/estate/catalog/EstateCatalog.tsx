@@ -1,10 +1,9 @@
-import EstateItem from '@/components/screens/home/EstateItem'
+import EstateItem from '@/components/screens/estate/EstateItem'
 import { useTypedNavigation } from '@/hooks/useTypedNavigation'
 import { IEstate } from '@/services/estate.service'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { FC } from 'react'
 import { Pressable, ScrollView, Text, View } from 'react-native'
-import Description from '../../heading/Description'
 import Heading from '../../heading/Heading'
 
 interface IEstateCatalog {

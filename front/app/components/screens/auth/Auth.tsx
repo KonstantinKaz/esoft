@@ -34,7 +34,7 @@ const Auth: FC = () => {
 					) : (
 						<>
 							<AuthFields control={control} isPassRequired />
-							<Button onPress={handleSubmit(onSubmit)} icon={'film'}>
+							<Button onPress={handleSubmit(onSubmit)} icon={'home'}>
 								Go to Watch
 							</Button>
 							<Pressable onPress={() => setIsReg(!isReg)}>

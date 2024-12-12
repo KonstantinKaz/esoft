@@ -6,3 +6,4 @@ export const getUsersUrl = (string: string) => `/users/${string}`
 export const getEstatesUrl = (string: string) => `/estate/${string}`
 export const getOffersUrl = (string: string) => `/offers/${string}`
 export const getDemandsUrl = (string: string) => `/demands/${string}`
+export const getEventsUrl = (string: string) => `/events${string}`

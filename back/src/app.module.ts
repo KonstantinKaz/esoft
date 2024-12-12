@@ -7,10 +7,11 @@ import { UserModule } from './user/user.module';
 import { EstateModule } from './estate/estate.module';
 import { OfferModule } from './offer/offer.module';
 import { DemandModule } from './demand/demand.module';
+import { EventModule } from './event/event.module';
 
 
 @Module({
-	imports: [ConfigModule.forRoot(), AuthModule, UserModule, EstateModule, OfferModule, DemandModule],
+	imports: [ConfigModule.forRoot(), AuthModule, UserModule, EstateModule, OfferModule, DemandModule, EventModule],
 	controllers: [AppController],
 	providers: [AppService],
 })

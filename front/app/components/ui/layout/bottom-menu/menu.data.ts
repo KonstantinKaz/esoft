@@ -2,8 +2,12 @@ import { IMenuItem } from './menu.interface'
 
 export const menuItems: IMenuItem[] = [
 	{
+		iconName: 'calendar',
+		path: 'EventsToday'
+	},
+	{
 		iconName: 'home',
-		path: 'Home'
+		path: 'Estates'
 	},
 	{
 		iconName: 'bar-chart',
@@ -14,7 +18,7 @@ export const menuItems: IMenuItem[] = [
 		iconName: 'list'
 	},
 	{
-		iconName: 'user',
+		iconName: 'users',
 		path: 'UserList'
-	}
+	},
 ]

@@ -11,39 +11,32 @@ export class EstateService {
 
 	async createEstate(data: EstateDto) {
 		const { apartmentData, houseData, landData, ...estateData } = data
-		const type = data.type.toUpperCase() as EstateType
 
 		return this.prisma.estate.create({
 			data: {
 				...estateData,
-				type,
-				...(type === EstateType.APARTMENT && {
-					apartmentData: {
-						create: {
-							apartment: apartmentData?.apartment || null,
-							floor: apartmentData?.floor ? Number(apartmentData.floor) : null,
-							rooms: apartmentData?.rooms ? Number(apartmentData.rooms) : null,
-							totalArea: apartmentData?.totalArea ? Number(apartmentData.totalArea) : null
-						}
+				type: data.type,
+				houseData: data.type === 'HOUSE' ? {
+					create: {
+						floors: houseData?.floors ? parseInt(houseData.floors) : null,
+						rooms: houseData?.rooms ? parseInt(houseData.rooms) : null,
+						totalArea: houseData?.totalArea ? parseFloat(houseData.totalArea) : null
 					}
-				}),
-				...(type === EstateType.HOUSE && {
-					houseData: {
-						create: {
-							floors: houseData?.floors ? Number(houseData.floors) : null,
-							rooms: houseData?.rooms ? Number(houseData.rooms) : null,
-							totalArea: houseData?.totalArea ? Number(houseData.totalArea) : null
-						}
+				} : undefined,
+				apartmentData: data.type === 'APARTMENT' ? {
+					create: {
+						apartment: apartmentData?.apartment || null,
+						floor: apartmentData?.floor ? parseInt(apartmentData.floor) : null,
+						rooms: apartmentData?.rooms ? parseInt(apartmentData.rooms) : null,
+						totalArea: apartmentData?.totalArea ? parseFloat(apartmentData.totalArea) : null
 					}
-				}),
-				...(type === EstateType.LAND && {
-					landData: {
-						create: {
-							totalArea: landData?.totalArea ? Number(landData.totalArea) : null,
-							coordinates: landData?.coordinates ? JSON.stringify(landData.coordinates) : null
-						}
+				} : undefined,
+				landData: data.type === 'LAND' ? {
+					create: {
+						totalArea: landData?.totalArea ? parseFloat(landData.totalArea) : null,
+						coordinates: landData?.coordinates || null
 					}
-				})
+				} : undefined
 			},
 			include: {
 				apartmentData: true,

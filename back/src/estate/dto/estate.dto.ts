@@ -10,34 +10,31 @@ import {
 import { Transform } from 'class-transformer'
 
 export class EstateDto {
-	id?: string
+	@IsEnum(EstateType)
 	type: EstateType
-	city?: string
-	street?: string
-	house?: string
+	city: string
+	street: string
+	house: string
 	searchTerm?: string
 
 	// Данные для квартиры
 	apartmentData?: {
-		apartment?: string
-		floor?: number
-		rooms?: number
-		totalArea?: number
+		apartment: string
+		floor: string
+		rooms: string
+		totalArea: string
 	}
 
 	// Данные для дома
 	houseData?: {
-		floors?: number
-		rooms?: number
-		totalArea?: number
+		floors: string
+		rooms: string
+		totalArea: string
 	}
 
 	// Данные для участка
 	landData?: {
-		totalArea?: number
-		coordinates?: {
-			latitude: number
-			longitude: number
-		}
+		totalArea: string
+		coordinates?: string
 	}
 }

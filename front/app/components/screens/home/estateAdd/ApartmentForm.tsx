@@ -13,6 +13,11 @@ const ApartmentForm: FC<IApartmentFormProps> = ({ control }) => {
 		<View>
 			<Field
 				control={control}
+				name='apartmentData.apartment'
+				placeholder='Квартира'
+			/>
+			<Field
+				control={control}
 				name='apartmentData.rooms'
 				placeholder='Количество комнат'
 				keyboardType='numeric'

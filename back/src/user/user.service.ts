@@ -82,49 +82,16 @@ export class UserService {
 		})
 	}
 
-	async getAll(searchTerm?: string) {
+	async getAll(role?: string) {
+		const where = role ? { role: role as Role } : {};
+		
 		return this.prisma.user.findMany({
-			where: searchTerm
-				? {
-						OR: [
-							{
-								clientProfile: {
-									OR: [
-										{
-											firstName: { contains: searchTerm, mode: 'insensitive' },
-										},
-										{
-											lastName: { contains: searchTerm, mode: 'insensitive' },
-										},
-										{
-											email: { contains: searchTerm, mode: 'insensitive' },
-										},
-									],
-								},
-							},
-							{
-								realtorProfile: {
-									OR: [
-										{
-											firstName: { contains: searchTerm, mode: 'insensitive' },
-										},
-										{
-											lastName: { contains: searchTerm, mode: 'insensitive' },
-										},
-										{
-											email: { contains: searchTerm, mode: 'insensitive' },
-										},
-									],
-								},
-							},
-						],
-				  }
-				: {},
+			where,
 			include: {
 				clientProfile: true,
-				realtorProfile: true,
-			},
-		})
+				realtorProfile: true
+			}
+		});
 	}
 
 	async updateUser(id: string, data: AuthClientDto & { commission?: number }) {
@@ -208,7 +175,7 @@ export class UserService {
 				})
 			}
 
-			// Удаляем самого пользователя
+			// Уда��яем самого пользователя
 			return prisma.user.delete({
 				where: { id }
 			})

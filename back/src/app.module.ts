@@ -5,10 +5,11 @@ import { AuthModule } from './auth/auth.module'
 import { ConfigModule } from '@nestjs/config'
 import { UserModule } from './user/user.module';
 import { EstateModule } from './estate/estate.module';
+import { OfferModule } from './offer/offer.module';
 
 
 @Module({
-	imports: [ConfigModule.forRoot(), AuthModule, UserModule, EstateModule],
+	imports: [ConfigModule.forRoot(), AuthModule, UserModule, EstateModule, OfferModule],
 	controllers: [AppController],
 	providers: [AppService],
 })

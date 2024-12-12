@@ -4,6 +4,7 @@ import { request } from '@/services/api/request.api'
 import { Control } from 'react-hook-form'
 
 interface IApartmentData {
+	apartment?: string
 	floor?: number
 	rooms?: number
 	totalArea?: number
@@ -29,13 +30,10 @@ export interface IEstate {
 	city?: string
 	street?: string
 	house?: string
-	apartment?: string
-	latitude?: number
-	longitude?: number
 	apartmentData?: IApartmentData
 	houseData?: IHouseData
 	landData?: ILandData
-	control: Control<ISearchFormData>
+	control?: Control<ISearchFormData>
 }
 
 export interface IEstateSearch {
@@ -59,18 +57,14 @@ export const EstateService = {
 		const { apartmentData, houseData, landData, ...estateData } = data
 		const payload = {
 			...estateData,
-			...(data.type === 'APARTMENT' && apartmentData && {
-				floor: apartmentData.floor,
-				rooms: apartmentData.rooms,
-				totalArea: apartmentData.totalArea
+			...(data.type === 'APARTMENT' && {
+				apartmentData: apartmentData
 			}),
-			...(data.type === 'HOUSE' && houseData && {
-				floors: houseData.floors,
-				rooms: houseData.rooms,
-				totalArea: houseData.totalArea
+			...(data.type === 'HOUSE' && {
+				houseData: houseData
 			}),
-			...(data.type === 'LAND' && landData && {
-				totalArea: landData.totalArea
+			...(data.type === 'LAND' && {
+				landData: landData
 			})
 		}
 		return request({
@@ -84,19 +78,24 @@ export const EstateService = {
 		const { apartmentData, houseData, landData, ...estateData } = data
 		const payload = {
 			...estateData,
-			...(data.type === 'APARTMENT' && apartmentData && {
-				floor: Number(apartmentData.floor),
-				rooms: Number(apartmentData.rooms),
-				totalArea: apartmentData.totalArea ? Number(apartmentData.totalArea) : null
-			}),
-			...(data.type === 'HOUSE' && houseData && {
-				floors: Number(houseData.floors),
-				rooms: Number(houseData.rooms),
-				totalArea: houseData.totalArea ? Number(houseData.totalArea) : null
-			}),
-			...(data.type === 'LAND' && landData && {
-				totalArea: landData.totalArea ? Number(landData.totalArea) : null
-			})
+			...(data.type === 'APARTMENT' &&
+				apartmentData && {
+					floor: Number(apartmentData.floor),
+					rooms: Number(apartmentData.rooms),
+					totalArea: apartmentData.totalArea
+						? Number(apartmentData.totalArea)
+						: null
+				}),
+			...(data.type === 'HOUSE' &&
+				houseData && {
+					floors: Number(houseData.floors),
+					rooms: Number(houseData.rooms),
+					totalArea: houseData.totalArea ? Number(houseData.totalArea) : null
+				}),
+			...(data.type === 'LAND' &&
+				landData && {
+					totalArea: landData.totalArea ? Number(landData.totalArea) : null
+				})
 		}
 		return request({
 			url: getEstatesUrl(`update/${id}`),

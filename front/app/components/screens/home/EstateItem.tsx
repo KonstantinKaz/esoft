@@ -23,11 +23,13 @@ const EstateItem: FC<IEstateItem> = ({ estate, onPress }) => {
 					? `${estate.houseData.rooms} комн. · ${estate.houseData.totalArea} м² · ${estate.houseData.floors} эт.`
 					: ''
 			case 'LAND':
-				const coordinates = estate.landData?.coordinates 
-					? JSON.parse(estate.landData.coordinates as string)
+				const coordinates = estate.landData?.coordinates
+					? estate.landData.coordinates
 					: null
-				const area = estate.landData?.totalArea ? `${estate.landData.totalArea} м²` : ''
-				const coords = coordinates 
+				const area = estate.landData?.totalArea
+					? `${estate.landData.totalArea} м²`
+					: ''
+				const coords = coordinates
 					? `· ${coordinates.latitude.toFixed(6)}, ${coordinates.longitude.toFixed(6)}`
 					: ''
 				return `${area} ${coords}`
@@ -67,9 +69,12 @@ const EstateItem: FC<IEstateItem> = ({ estate, onPress }) => {
 			</View>
 
 			<Text className='text-white text-base mb-2'>
-				{
-        [estate.street, estate.house, estate.apartment, estate.city]
-				// [`ул. ${estate.street} ${estate.house}, кв. ${estate.apartment}, ${estate.city}`]
+				{[
+					estate.street,
+					estate.house,
+					estate.apartmentData?.apartment,
+					estate.city
+				]
 					.filter(Boolean)
 					.join(', ')}
 			</Text>

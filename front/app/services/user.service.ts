@@ -4,12 +4,28 @@ import { IMovie } from '@/shared/types/movie.interface'
 import { IUser, IUserEditInput } from '@/shared/types/user.interface'
 import { request } from './api/request.api'
 
+export interface IUser {
+	id: string
+	email: string
+	role: 'CLIENT' | 'REALTOR' | 'ADMIN'
+	clientProfile?: {
+		firstName: string
+		lastName: string
+		middleName: string
+	}
+	realtorProfile?: {
+		firstName: string
+		lastName: string
+		middleName: string
+	}
+}
+
 export const UserService = {
-	async getAll(searchTerm?: string) {
+	async getAll(filter?: { role?: string }) {
 		return request<IUser[]>({
 			url: getUsersUrl(''),
 			method: 'GET',
-			params: searchTerm ? { searchTerm } : {}
+			params: filter
 		})
 	},
 

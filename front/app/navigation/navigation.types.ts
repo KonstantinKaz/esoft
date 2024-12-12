@@ -1,5 +1,3 @@
-import { ComponentType } from 'react'
-
 export type TypeRootStackParamList = {
 	Auth: undefined
 	Home: undefined
@@ -8,9 +6,10 @@ export type TypeRootStackParamList = {
 	Search: undefined
 	Favorites: undefined
 	Profile: undefined
-	Movie: { slug: string }
-	Genre: { slug: string }
-	Actor: { slug: string }
+	Offers: undefined
+	OfferList: undefined
+	OfferAdd: undefined
+	OfferEdit: { id: string }
 	Estate: {
 		id: string
 	}
@@ -33,8 +32,8 @@ type TypeRootStackAdminList = {
 }
 
 export interface IRoute {
-	name: keyof TypeRootStackParamList;
-	component: React.ComponentType<any>;
-	isAdmin: boolean;
-	props?: any;
+	name: keyof TypeRootStackParamList
+	component: React.ComponentType<any>
+	isAdmin: boolean
+	props?: any
 }

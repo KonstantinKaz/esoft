@@ -7,11 +7,7 @@ export const menuItems: IMenuItem[] = [
 	},
 	{
 		iconName: 'bar-chart',
-		path: 'Trending'
-	},
-	{
-		iconName: 'search',
-		path: 'Search'
+		path: 'OfferList'
 	},
 	{
 		iconName: 'heart',

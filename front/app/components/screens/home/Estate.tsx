@@ -96,18 +96,23 @@ const Estate: FC = () => {
 			<ScrollView showsVerticalScrollIndicator={false}>
 				<View className='mb-32'>
 					<Text className='text-white text-xl mb-4'>
-						{[estate.street, estate.house, estate.city, estate.apartment]
+						{[
+							estate.street,
+							estate.house,
+							estate.apartmentData?.apartment,
+							estate.city
+						]
 							.filter(Boolean)
 							.join(', ')}
 					</Text>
 
 					{getEstateDetails()}
 
-					{estate.latitude && estate.longitude && (
+					{estate.landData?.coordinates && (
 						<View className='mt-4'>
 							<Text className='text-gray-400 mb-2'>Координаты:</Text>
 							<Text className='text-white'>
-								{`${estate.latitude.toFixed(6)}, ${estate.longitude.toFixed(6)}`}
+								{`${estate.landData.coordinates.latitude.toFixed(6)}, ${estate.landData.coordinates.longitude.toFixed(6)}`}
 							</Text>
 						</View>
 					)}

@@ -70,8 +70,12 @@ const EstateAdd: FC = () => {
 							placeholder='Улица'
 							rules={{ required: 'Улица обязательна' }}
 						/>
-						<Field control={control} name='house' placeholder='Дом' />
-						<Field control={control} name='apartment' placeholder='Квартира' />
+						<Field
+							control={control}
+							name='house'
+							placeholder='Дом'
+							rules={{ required: 'Дом обязателен' }}
+						/>
 
 						{renderEstateTypeForm()}
 

@@ -1,6 +1,9 @@
 import Estate from '@/components/screens/home/Estate'
 import EstateAdd from '@/components/screens/home/estateAdd/EstateAdd'
 import EstateEdit from '@/components/screens/home/estateEdit/EstateEdit'
+import OfferAdd from '@/components/screens/offers/OfferAdd'
+import OfferEdit from '@/components/screens/offers/OfferEdit'
+import OfferList from '@/components/screens/offers/OfferList'
 import UserEdit from '@/components/screens/users/UserEdit'
 import UserList from '@/components/screens/users/UserList'
 import Home from 'components/screens/home/Home'
@@ -13,11 +16,21 @@ export const userRoutes: IRoute[] = [
 		component: Home,
 		isAdmin: false
 	},
-	// {
-	// 	name: 'Profile',
-	// 	component: Profile,
-	// 	isAdmin: false
-	// },
+	{
+		name: 'OfferList',
+		component: OfferList,
+		isAdmin: false
+	},
+	{
+		name: 'OfferAdd',
+		component: OfferAdd,
+		isAdmin: false
+	},
+	{
+		name: 'OfferEdit',
+		component: OfferEdit,
+		isAdmin: false
+	},
 	// {
 	// 	name: 'Favorites',
 	// 	component: Favorites,
@@ -75,4 +88,4 @@ export const userRoutes: IRoute[] = [
 	}
 ]
 
-export const routes = [...userRoutes, ...adminRoutes]
+export const routes = [...userRoutes]

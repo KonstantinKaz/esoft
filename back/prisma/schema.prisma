@@ -21,10 +21,12 @@ model User {
   password    String
   role        Role
 
-
   clientProfile   ClientProfile?
   realtorProfile  RealtorProfile?
   adminProfile    AdminProfile?
+
+  clientOffers    Offer[] @relation("ClientOffers")
+  realtorOffers   Offer[] @relation("RealtorOffers")
 }
 
 model ClientProfile {
@@ -130,13 +132,36 @@ model Land {
   @@map("lands")
 }
 
-// Модель для предложений (чтобы реализовать проверку при удалении)
 model Offer {
-  id            String     @id @default(cuid())
-  Estate    Estate @relation(fields: [EstateId], references: [id])
-  EstateId  String     @map("estate_id")
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+  
+  price     Int
+  
+  estate    Estate   @relation(fields: [estateId], references: [id])
+  estateId  String   @map("estate_id")
+  
+  client    User     @relation("ClientOffers", fields: [clientId], references: [id])
+  clientId  String   @map("client_id")
+  
+  realtor   User     @relation("RealtorOffers", fields: [realtorId], references: [id])
+  realtorId String   @map("realtor_id")
+  
+  deals     Deal[]
 
   @@map("offers")
+}
+
+model Deal {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+  
+  offer     Offer    @relation(fields: [offerId], references: [id])
+  offerId   String   @map("offer_id")
+
+  @@map("deals")
 }
 
 

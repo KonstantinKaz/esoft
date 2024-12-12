@@ -15,8 +15,8 @@ export class UserController {
 	}
 
 	@Get()
-	async getAll(@Query('searchTerm') searchTerm?: string) {
-		return this.userService.getAll(searchTerm)
+	async getAll(@Query('role') role?: 'CLIENT' | 'REALTOR' | 'ADMIN') {
+		return this.userService.getAll(role)
 	}
 
 	@Get('by-id/:id')

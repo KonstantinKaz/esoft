@@ -9,10 +9,10 @@ import Layout from '@/components/ui/layout/Layout'
 import Loader from '@/components/ui/Loader'
 import { useTypedNavigation } from '@/hooks/useTypedNavigation'
 import { IEstate } from '@/services/estate.service'
-import { useEstateEdit } from './useEstateEdit'
 import ApartmentForm from '../estateAdd/ApartmentForm'
 import HouseForm from '../estateAdd/HouseForm'
 import LandForm from '../estateAdd/LandForm'
+import { useEstateEdit } from './useEstateEdit'
 
 const EstateEdit: FC = () => {
 	const { control, setValue, handleSubmit } = useForm<IEstate>({
@@ -55,11 +55,7 @@ const EstateEdit: FC = () => {
 		<Layout isHasPadding>
 			<View className='flex-row items-center mb-6'>
 				<Pressable onPress={goBack} className='mr-3'>
-					<Ionicons
-						name='arrow-back-circle-outline'
-						size={32}
-						color='white'
-					/>
+					<Ionicons name='arrow-back-circle-outline' size={32} color='white' />
 				</Pressable>
 				<Text className='text-white text-2xl font-semibold'>
 					{estate.type === 'APARTMENT'
@@ -89,14 +85,6 @@ const EstateEdit: FC = () => {
 					placeholder='Дом'
 					defaultValue={estate.house}
 				/>
-				{estate.type === 'APARTMENT' && (
-					<Field
-						control={control}
-						name='apartment'
-						placeholder='Квартира'
-						defaultValue={estate.apartmentData?.apartment}
-					/>
-				)}
 
 				{renderEstateTypeForm()}
 

@@ -1,13 +1,13 @@
+import { Ionicons } from '@expo/vector-icons'
 import { FC } from 'react'
 import { Pressable, Text, View } from 'react-native'
-import { Ionicons } from '@expo/vector-icons'
 
+import EstateCatalog from '@/components/ui/estate/catalog/EstateCatalog'
 import Layout from '@/components/ui/layout/Layout'
 import Loader from '@/components/ui/Loader'
-import { useTypedNavigation } from '@/hooks/useTypedNavigation'
-import EstateCatalog from '@/components/ui/estate/catalog/EstateCatalog'
 import Search from '@/components/ui/search/Search'
 import { useSearch } from '@/components/ui/search/useSearch'
+import { useTypedNavigation } from '@/hooks/useTypedNavigation'
 
 const Home: FC = () => {
 	const { navigate } = useTypedNavigation()
@@ -21,17 +21,10 @@ const Home: FC = () => {
 					<Ionicons name='add-circle' size={32} color='white' />
 				</Pressable>
 			</View>
-			
-			<Search 
-				control={control}
-				placeholder='Поиск по адресу...'
-			/>
-			
-			{isLoading ? (
-				<Loader />
-			) : (
-				<EstateCatalog estates={estates} />
-			)}
+
+			<Search control={control} placeholder='Поиск по адресу...' />
+
+			{isLoading ? <Loader /> : <EstateCatalog estates={estates} />}
 		</Layout>
 	)
 }

@@ -1,8 +1,9 @@
 import { useTypedNavigation } from '@/hooks/useTypedNavigation'
 import { IUser } from '@/shared/types/user.interface'
 import { MaterialIcons } from '@expo/vector-icons'
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
+import UserDeals from './UserDeals'
 
 interface IUserItem extends IUser {
 	onDelete: () => void
@@ -16,6 +17,7 @@ const UserItem: FC<IUserItem> = ({
 	onDelete
 }) => {
 	const { navigate } = useTypedNavigation()
+	const [isDealsVisible, setIsDealsVisible] = useState(false)
 	const profile = role === 'REALTOR' ? realtorProfile : clientProfile
 
 	const getName = () => {
@@ -35,9 +37,12 @@ const UserItem: FC<IUserItem> = ({
 	return (
 		<View className='bg-[#222222] p-4 rounded-xl mb-4'>
 			<View className='flex-row justify-between items-center mb-2'>
-				<View className='flex-1 mr-2'>
+				<Pressable 
+					className='flex-1 mr-2'
+					onPress={() => setIsDealsVisible(!isDealsVisible)}
+				>
 					{getName()}
-				</View>
+				</Pressable>
 				<View className='flex-row items-center'>
 					<Pressable
 						onPress={() => navigate('UserEdit', { id })}
@@ -69,6 +74,10 @@ const UserItem: FC<IUserItem> = ({
 			<Text className='text-white opacity-70 text-sm mt-2'>
 				{role === 'CLIENT' ? 'Клиент' : 'Риэлтор'}
 			</Text>
+
+			{isDealsVisible && (
+				<UserDeals userId={id} role={role} />
+			)}
 		</View>
 	)
 }

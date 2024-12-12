@@ -5,4 +5,4 @@ export const getAuthUrl = (string: string) => `/auth/${string}`
 export const getUsersUrl = (string: string) => `/users/${string}`
 export const getEstatesUrl = (string: string) => `/estate/${string}`
 export const getOffersUrl = (string: string) => `/offers/${string}`
-export const getDealsUrl = (string: string) => `/deals/${string}`
+export const getDemandsUrl = (string: string) => `/demands/${string}`

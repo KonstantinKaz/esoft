@@ -27,6 +27,8 @@ model User {
 
   clientOffers    Offer[] @relation("ClientOffers")
   realtorOffers   Offer[] @relation("RealtorOffers")
+  clientDemands   Demand[] @relation("ClientDemands")
+  realtorDemands  Demand[] @relation("RealtorDemands")
 }
 
 model ClientProfile {
@@ -162,6 +164,40 @@ model Deal {
   offerId   String   @map("offer_id")
 
   @@map("deals")
+}
+
+model Demand {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+  
+  estateType EstateType
+  address    String?
+  
+  minPrice   Int?    @map("min_price")
+  maxPrice   Int?    @map("max_price")
+  
+  // Apartment/House fields
+  minArea    Float?  @map("min_area")
+  maxArea    Float?  @map("max_area")
+  minRooms   Int?    @map("min_rooms")
+  maxRooms   Int?    @map("max_rooms")
+  
+  // Apartment fields
+  minFloor   Int?    @map("min_floor")
+  maxFloor   Int?    @map("max_floor")
+  
+  // House fields
+  minFloors  Int?    @map("min_floors")
+  maxFloors  Int?    @map("max_floors")
+  
+  client    User     @relation("ClientDemands", fields: [clientId], references: [id])
+  clientId  String   @map("client_id")
+  
+  realtor   User     @relation("RealtorDemands", fields: [realtorId], references: [id])
+  realtorId String   @map("realtor_id")
+
+  @@map("demands")
 }
 
 

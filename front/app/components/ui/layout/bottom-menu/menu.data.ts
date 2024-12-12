@@ -10,8 +10,8 @@ export const menuItems: IMenuItem[] = [
 		path: 'OfferList'
 	},
 	{
-		iconName: 'heart',
-		path: 'Favorites'
+		path: 'DemandList',
+		iconName: 'list'
 	},
 	{
 		iconName: 'user',

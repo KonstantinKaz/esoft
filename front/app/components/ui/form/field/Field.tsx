@@ -8,16 +8,17 @@ interface IFieldProps extends TextInputProps {
 	rules?: Object
 	className?: string
 	secureTextEntry?: boolean
+	onChange?: (text: string) => string
 }
 
-const Field: FC<IFieldProps> = ({ control, name, rules, className, secureTextEntry, ...rest }) => {
+const Field: FC<IFieldProps> = ({ control, name, rules, className, secureTextEntry, onChange, ...rest }) => {
 	return (
 		<Controller
 			control={control}
 			name={name}
 			rules={rules}
 			render={({
-				field: { onChange, onBlur, value },
+				field: { onChange: fieldOnChange, onBlur, value },
 				fieldState: { error }
 			}) => (
 				<View
@@ -25,12 +26,14 @@ const Field: FC<IFieldProps> = ({ control, name, rules, className, secureTextEnt
 				>
 					<TextInput
 						autoCapitalize='none'
-						onChangeText={onChange}
+						onChangeText={(text) => {
+							const formattedText = onChange ? onChange(text) : text
+							fieldOnChange(formattedText)
+						}}
 						onBlur={onBlur}
-						value={(value || '').toString()}
+						value={value?.toString() || ''}
 						className='text-white text-base'
-						secureTextEntry={secureTextEntry}
-						{...rest}
+							{...rest}
 					/>
 					{error && <Text className='text-red'>{error.message}</Text>}
 				</View>

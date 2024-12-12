@@ -33,7 +33,7 @@ const EstateEdit: FC = () => {
 	if (!estate) {
 		return (
 			<Layout isHasPadding>
-				<Text className='text-white text-lg'>��бъект не найден</Text>
+				<Text className='text-white text-lg'>Объект не найден</Text>
 			</Layout>
 		)
 	}
@@ -89,22 +89,18 @@ const EstateEdit: FC = () => {
 					placeholder='Дом'
 					defaultValue={estate.house}
 				/>
-				<Field
-					control={control}
-					name='apartment'
-					placeholder='Квартира'
-					defaultValue={estate.apartment}
-				/>
+				{estate.type === 'APARTMENT' && (
+					<Field
+						control={control}
+						name='apartment'
+						placeholder='Квартира'
+						defaultValue={estate.apartmentData?.apartment}
+					/>
+				)}
 
 				{renderEstateTypeForm()}
 
-				<Button 
-					onPress={handleSubmit((formData) => {
-						console.log('Form data before submit:', formData)
-						onSubmit(formData)
-					})} 
-					icon='pen-tool'
-				>
+				<Button onPress={handleSubmit(onSubmit)} icon='pen-tool'>
 					Обновить
 				</Button>
 			</ScrollView>

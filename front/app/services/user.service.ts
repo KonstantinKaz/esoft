@@ -63,5 +63,25 @@ export const UserService = {
 			url: getUsersUrl(`${_id}`),
 			method: 'DELETE'
 		})
+	},
+
+	async createUser(data: any) {
+		return request({
+			url: getUsersUrl('create'),
+			method: 'POST',
+			data
+		})
+	},
+
+	async fuzzySearch(searchQuery: {
+		firstName?: string
+		lastName?: string
+		middleName?: string
+	}) {
+		return request<IUser[]>({
+			url: getUsersUrl('search'),
+			method: 'POST',
+			data: searchQuery
+		})
 	}
 }

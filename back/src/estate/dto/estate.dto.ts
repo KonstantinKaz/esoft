@@ -10,19 +10,34 @@ import {
 import { Transform } from 'class-transformer'
 
 export class EstateDto {
-	type: string
+	id?: string
+	type: EstateType
 	city?: string
 	street?: string
 	house?: string
-	apartment?: string
-	latitude?: number
-	longitude?: number
+	searchTerm?: string
 
-	// Поля для квартиры
-	floor?: number
-	rooms?: number
-	totalArea?: number
+	// Данные для квартиры
+	apartmentData?: {
+		apartment?: string
+		floor?: number
+		rooms?: number
+		totalArea?: number
+	}
 
-	// Дополнительные поля для дома
-	floors?: number
+	// Данные для дома
+	houseData?: {
+		floors?: number
+		rooms?: number
+		totalArea?: number
+	}
+
+	// Данные для участка
+	landData?: {
+		totalArea?: number
+		coordinates?: {
+			latitude: number
+			longitude: number
+		}
+	}
 }

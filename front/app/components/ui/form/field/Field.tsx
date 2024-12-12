@@ -7,9 +7,10 @@ interface IFieldProps extends TextInputProps {
 	name: string
 	rules?: Object
 	className?: string
+	secureTextEntry?: boolean
 }
 
-const Field: FC<IFieldProps> = ({ control, name, rules, className, ...rest }) => {
+const Field: FC<IFieldProps> = ({ control, name, rules, className, secureTextEntry, ...rest }) => {
 	return (
 		<Controller
 			control={control}
@@ -28,6 +29,7 @@ const Field: FC<IFieldProps> = ({ control, name, rules, className, ...rest }) =>
 						onBlur={onBlur}
 						value={(value || '').toString()}
 						className='text-white text-base'
+						secureTextEntry={secureTextEntry}
 						{...rest}
 					/>
 					{error && <Text className='text-red'>{error.message}</Text>}

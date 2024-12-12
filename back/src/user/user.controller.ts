@@ -9,6 +9,11 @@ import { UserService } from './user.service'
 export class UserController {
 	constructor(private readonly userService: UserService) {}
 
+	@Post('create')
+	async createUser(@Body() data: AuthClientDto) {
+		return this.userService.createUser(data)
+	}
+
 	@Get()
 	async getAll(@Query('searchTerm') searchTerm?: string) {
 		return this.userService.getAll(searchTerm)

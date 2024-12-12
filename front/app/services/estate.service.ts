@@ -17,6 +17,10 @@ interface IHouseData {
 
 interface ILandData {
 	totalArea?: number
+	coordinates?: {
+		latitude: number
+		longitude: number
+	}
 }
 
 export interface IEstate {

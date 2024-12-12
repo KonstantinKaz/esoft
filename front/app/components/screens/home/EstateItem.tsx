@@ -23,7 +23,14 @@ const EstateItem: FC<IEstateItem> = ({ estate, onPress }) => {
 					? `${estate.houseData.rooms} комн. · ${estate.houseData.totalArea} м² · ${estate.houseData.floors} эт.`
 					: ''
 			case 'LAND':
-				return estate.landData ? `${estate.landData.totalArea} м²` : ''
+				const coordinates = estate.landData?.coordinates 
+					? JSON.parse(estate.landData.coordinates as string)
+					: null
+				const area = estate.landData?.totalArea ? `${estate.landData.totalArea} м²` : ''
+				const coords = coordinates 
+					? `· ${coordinates.latitude.toFixed(6)}, ${coordinates.longitude.toFixed(6)}`
+					: ''
+				return `${area} ${coords}`
 			default:
 				return ''
 		}

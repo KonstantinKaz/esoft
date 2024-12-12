@@ -24,26 +24,28 @@ export const useEstateEdit = (setValue: UseFormSetValue<IEstate>) => {
 		setValue('city', estate.city || '')
 		setValue('street', estate.street || '')
 		setValue('house', estate.house || '')
-		setValue('apartment', estate.apartment || '')
 		setValue('type', estate.type)
 
-		if (estate.type === 'APARTMENT' && estate.apartmentData) {
+		if (estate.type === 'APARTMENT') {
+			setValue('apartment', estate.apartmentData?.apartment || '')
 			setValue('apartmentData', {
-				rooms: estate.apartmentData.rooms || null,
-				floor: estate.apartmentData.floor || null,
-				totalArea: estate.apartmentData.totalArea || null
+				rooms: estate.apartmentData?.rooms || null,
+				floor: estate.apartmentData?.floor || null,
+				totalArea: estate.apartmentData?.totalArea || null
 			})
 		}
-		if (estate.type === 'HOUSE' && estate.houseData) {
+		if (estate.type === 'HOUSE') {
 			setValue('houseData', {
-				rooms: estate.houseData.rooms || null,
-				floors: estate.houseData.floors || null,
-				totalArea: estate.houseData.totalArea || null
+				rooms: estate.houseData?.rooms || null,
+				floors: estate.houseData?.floors || null,
+				totalArea: estate.houseData?.totalArea || null
 			})
 		}
-		if (estate.type === 'LAND' && estate.landData) {
+		if (estate.type === 'LAND') {
 			setValue('landData', {
-				totalArea: estate.landData.totalArea || null
+				totalArea: estate.landData?.totalArea || null,
+				coordinates: estate.landData?.coordinates ? 
+					JSON.parse(estate.landData.coordinates as string) : null
 			})
 		}
 	}, [estate, setValue])
@@ -53,11 +55,17 @@ export const useEstateEdit = (setValue: UseFormSetValue<IEstate>) => {
 	const { mutateAsync } = useMutation({
 		mutationKey: ['update estate'],
 		mutationFn: (data: IEstate) => {
-			console.log('Sending update data:', data)
-			return EstateService.update(estateId, {
-				...data,
-				type: estate?.type || 'APARTMENT'
-			})
+			const { apartment, ...rest } = data
+			const payload = {
+				...rest,
+				...(estate?.type === 'APARTMENT' && {
+					apartmentData: {
+						...rest.apartmentData,
+						apartment
+					}
+				})
+			}
+			return EstateService.update(estateId, payload)
 		},
 		onSuccess: async () => {
 			Toast.show({
@@ -68,24 +76,11 @@ export const useEstateEdit = (setValue: UseFormSetValue<IEstate>) => {
 
 			await queryClient.invalidateQueries({ queryKey: ['estates'] })
 			goBack()
-		},
-		onError: (error) => {
-			console.error('Update error:', error)
-			Toast.show({
-				type: 'error',
-				text1: 'Ошибка',
-				text2: 'Не удалось обновить данные'
-			})
 		}
 	})
 
 	const onSubmit: SubmitHandler<IEstate> = async data => {
-		try {
-			console.log('Form submitted with data:', data)
-			await mutateAsync(data)
-		} catch (error) {
-			console.error('Submit error:', error)
-		}
+		await mutateAsync(data)
 	}
 
 	return { onSubmit, isLoading, estate }

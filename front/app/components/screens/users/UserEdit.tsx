@@ -12,7 +12,7 @@ import { Pressable, Text } from 'react-native'
 import { useTypedNavigation } from '@/hooks/useTypedNavigation'
 
 const UserEdit: FC = () => {
-	const { control, setValue, handleSubmit } = useForm<IUserEditInput>({
+	const { control, setValue, handleSubmit, watch } = useForm<IUserEditInput>({
 		mode: 'onChange'
 	})
 	const { goBack } = useTypedNavigation()
@@ -78,24 +78,27 @@ const UserEdit: FC = () => {
 					name='lastName'
 					placeholder='Фамилия'
 					defaultValue={profile.lastName}
-					rules={{
-						required: 'Фамилия обязательна'
-					}}
+					rules={data.role === 'REALTOR' ? 
+						{ required: 'Обязательное поле' } : 
+						{}}
 				/>
 				<Field
 					control={control}
 					name='firstName'
 					placeholder='Имя'
 					defaultValue={profile.firstName}
-					rules={{
-						required: 'Имя обязательно'
-					}}
+					rules={data.role === 'REALTOR' ? 
+						{ required: 'Обязательное поле' } : 
+						{}}
 				/>
 				<Field
 					control={control}
 					name='middleName'
 					placeholder='Отчество'
 					defaultValue={profile.middleName}
+					rules={data.role === 'REALTOR' ? 
+						{ required: 'Обязательное поле' } : 
+						{}}
 				/>
 				<Field
 					control={control}
@@ -103,7 +106,12 @@ const UserEdit: FC = () => {
 					placeholder='Email'
 					defaultValue={profile.email}
 					rules={{
-						required: 'Email обязателен'
+						validate: (value: string) => {
+							if (data.role === 'REALTOR') {
+								return value ? true : 'Обязательное поле'
+							}
+							return value || watch('phone') ? true : 'Укажите email или телефон'
+						}
 					}}
 				/>
 				<Field
@@ -112,17 +120,26 @@ const UserEdit: FC = () => {
 					placeholder='Телефон'
 					defaultValue={profile.phone}
 					rules={{
-						required: 'Телефон обязателен'
+						validate: (value: string) => {
+							if (data.role === 'REALTOR') {
+								return value ? true : 'Обязательное поле'
+							}
+							return value || watch('email') ? true : 'Укажите email или телефон'
+						}
 					}}
 				/>
+				{data.role === 'REALTOR' && (
+					<Field
+						control={control}
+						name='commission'
+						placeholder='Комиссия'
+						defaultValue={profile.commission?.toString()}
+						keyboardType='numeric'
+						rules={{ required: 'Обязательное поле' }}
+					/>
+				)}
 
-				<Button 
-					onPress={handleSubmit((formData) => {
-						console.log('Form data before submit:', formData)
-						onSubmit(formData)
-					})} 
-					icon='pen-tool'
-				>
+				<Button onPress={handleSubmit(onSubmit)} icon='pen-tool'>
 					Обновить
 				</Button>
 			</View>

@@ -10,8 +10,7 @@ export class EstateService {
 	constructor(private readonly prisma: PrismaService) {}
 
 	async createEstate(data: EstateDto) {
-		const { floor, rooms, totalArea, floors, ...estateData } = data
-
+		const { apartmentData, houseData, landData, ...estateData } = data
 		const type = data.type.toUpperCase() as EstateType
 
 		return this.prisma.estate.create({
@@ -21,39 +20,41 @@ export class EstateService {
 				...(type === EstateType.APARTMENT && {
 					apartmentData: {
 						create: {
-							floor: floor ? Number(floor) : null,
-							rooms: rooms ? Number(rooms) : null,
-							totalArea: totalArea ? Number(totalArea) : null,
-						},
-					},
+							apartment: apartmentData?.apartment || null,
+							floor: apartmentData?.floor ? Number(apartmentData.floor) : null,
+							rooms: apartmentData?.rooms ? Number(apartmentData.rooms) : null,
+							totalArea: apartmentData?.totalArea ? Number(apartmentData.totalArea) : null
+						}
+					}
 				}),
 				...(type === EstateType.HOUSE && {
 					houseData: {
 						create: {
-							floors: floors ? Number(floors) : null,
-							rooms: rooms ? Number(rooms) : null,
-							totalArea: totalArea ? Number(totalArea) : null,
-						},
-					},
+							floors: houseData?.floors ? Number(houseData.floors) : null,
+							rooms: houseData?.rooms ? Number(houseData.rooms) : null,
+							totalArea: houseData?.totalArea ? Number(houseData.totalArea) : null
+						}
+					}
 				}),
 				...(type === EstateType.LAND && {
 					landData: {
 						create: {
-							totalArea: totalArea ? Number(totalArea) : null,
-						},
-					},
-				}),
+							totalArea: landData?.totalArea ? Number(landData.totalArea) : null,
+							coordinates: landData?.coordinates ? JSON.stringify(landData.coordinates) : null
+						}
+					}
+				})
 			},
 			include: {
 				apartmentData: true,
 				houseData: true,
-				landData: true,
-			},
+				landData: true
+			}
 		})
 	}
 
 	async updateEstate(id: string, data: EstateDto) {
-		const { floor, rooms, totalArea, floors, ...estateData } = data
+		const { apartmentData, houseData, landData, ...estateData } = data
 
 		const estate = await this.prisma.estate.findUnique({
 			where: { id },
@@ -75,52 +76,56 @@ export class EstateService {
 					apartmentData: {
 						upsert: {
 							create: {
-								floor: floor ? Number(floor) : null,
-								rooms: rooms ? Number(rooms) : null,
-								totalArea: totalArea ? Number(totalArea) : null,
+								apartment: apartmentData?.apartment || null,
+								floor: apartmentData?.floor ? Number(apartmentData.floor) : null,
+								rooms: apartmentData?.rooms ? Number(apartmentData.rooms) : null,
+								totalArea: apartmentData?.totalArea ? Number(apartmentData.totalArea) : null,
 							},
 							update: {
-								floor: floor ? Number(floor) : null,
-								rooms: rooms ? Number(rooms) : null,
-								totalArea: totalArea ? Number(totalArea) : null,
-							},
-						},
-					},
+								apartment: apartmentData?.apartment || null,
+								floor: apartmentData?.floor ? Number(apartmentData.floor) : null,
+								rooms: apartmentData?.rooms ? Number(apartmentData.rooms) : null,
+								totalArea: apartmentData?.totalArea ? Number(apartmentData.totalArea) : null,
+							}
+						}
+					}
 				}),
 				...(estate.type === EstateType.HOUSE && {
 					houseData: {
 						upsert: {
 							create: {
-								floors: floors ? Number(floors) : null,
-								rooms: rooms ? Number(rooms) : null,
-								totalArea: totalArea ? Number(totalArea) : null,
+								floors: houseData?.floors ? Number(houseData.floors) : null,
+								rooms: houseData?.rooms ? Number(houseData.rooms) : null,
+								totalArea: houseData?.totalArea ? Number(houseData.totalArea) : null,
 							},
 							update: {
-								floors: floors ? Number(floors) : null,
-								rooms: rooms ? Number(rooms) : null,
-								totalArea: totalArea ? Number(totalArea) : null,
-							},
-						},
-					},
+								floors: houseData?.floors ? Number(houseData.floors) : null,
+								rooms: houseData?.rooms ? Number(houseData.rooms) : null,
+								totalArea: houseData?.totalArea ? Number(houseData.totalArea) : null,
+							}
+						}
+					}
 				}),
 				...(estate.type === EstateType.LAND && {
 					landData: {
 						upsert: {
 							create: {
-								totalArea: totalArea ? Number(totalArea) : null,
+								totalArea: landData?.totalArea ? Number(landData.totalArea) : null,
+								coordinates: landData?.coordinates ? JSON.stringify(landData.coordinates) : null
 							},
 							update: {
-								totalArea: totalArea ? Number(totalArea) : null,
-							},
-						},
-					},
-				}),
+								totalArea: landData?.totalArea ? Number(landData.totalArea) : null,
+								coordinates: landData?.coordinates ? JSON.stringify(landData.coordinates) : null
+							}
+						}
+					}
+				})
 			},
 			include: {
 				apartmentData: true,
 				houseData: true,
-				landData: true,
-			},
+				landData: true
+			}
 		})
 	}
 
@@ -136,7 +141,7 @@ export class EstateService {
 
 		if (estate.offers.length > 0) {
 			throw new Error(
-				'Нельзя удалить объект недвижимоси, связанный с предложением'
+				'Нельзя удалить объект недвижимости, связанный с предложением'
 			)
 		}
 
@@ -146,11 +151,56 @@ export class EstateService {
 	}
 
 	async getEstates(filter: Partial<EstateDto>) {
+		const { apartmentData, houseData, landData, searchTerm, ...restFilter } = filter
+		
 		return this.prisma.estate.findMany({
 			where: {
-				...filter,
-				...(filter.type && {
-					type: filter.type.toUpperCase() as EstateType
+				...restFilter,
+				OR: searchTerm ? [
+					{
+						city: {
+							contains: searchTerm,
+							mode: 'insensitive'
+						}
+					},
+					{
+						street: {
+							contains: searchTerm,
+							mode: 'insensitive'
+						}
+					},
+					{
+						house: {
+							contains: searchTerm,
+							mode: 'insensitive'
+						}
+					}
+				] : undefined
+			},
+			include: {
+				apartmentData: true,
+				houseData: true,
+				landData: true
+			}
+		})
+	}
+
+	async searchEstates(searchParams: EstateSearchDto) {
+		const estates = await this.prisma.estate.findMany({
+			where: {
+				...(searchParams.city && {
+					city: { contains: searchParams.city, mode: 'insensitive' }
+				}),
+				...(searchParams.street && {
+					street: { contains: searchParams.street, mode: 'insensitive' }
+				}),
+				...(searchParams.house && {
+					house: { contains: searchParams.house, mode: 'insensitive' }
+				}),
+				...(searchParams.apartment && {
+					apartmentData: {
+						apartment: { contains: searchParams.apartment, mode: 'insensitive' }
+					}
 				})
 			},
 			include: {
@@ -159,65 +209,8 @@ export class EstateService {
 				landData: true,
 			},
 		})
-	}
 
-	async searchEstates(searchParams: EstateSearchDto) {
-		const estates = await this.prisma.estate.findMany({
-			include: {
-				apartmentData: true,
-				houseData: true,
-				landData: true,
-			},
-		})
-
-		return estates.filter((estate) => {
-			// Проверка на сответствие адреса
-			if (
-				searchParams.city ||
-				searchParams.street ||
-				searchParams.house ||
-				searchParams.apartment
-			) {
-				const cityMatch =
-					!searchParams.city ||
-					levenshtein(
-						estate.city?.toLowerCase() || '',
-						searchParams.city.toLowerCase()
-					) <= 3
-				const streetMatch =
-					!searchParams.street ||
-					levenshtein(
-						estate.street?.toLowerCase() || '',
-						searchParams.street.toLowerCase()
-					) <= 3
-				const houseMatch =
-					!searchParams.house ||
-					levenshtein(
-						estate.house?.toLowerCase() || '',
-						searchParams.house.toLowerCase()
-					) <= 1
-				const apartmentMatch =
-					!searchParams.apartment ||
-					levenshtein(
-						estate.apartment?.toLowerCase() || '',
-						searchParams.apartment.toLowerCase()
-					) <= 1
-
-				if (!cityMatch || !streetMatch || !houseMatch || !apartmentMatch) {
-					return false
-				}
-			}
-
-			// Проверка на нахождение внутри полигона
-			if (searchParams.polygon && estate.latitude && estate.longitude) {
-				return this.isPointInPolygon(
-					{ latitude: estate.latitude, longitude: estate.longitude },
-					searchParams.polygon
-				)
-			}
-
-			return true
-		})
+		return estates
 	}
 
 	private isPointInPolygon(point: GeoPoint, polygon: GeoPoint[]): boolean {

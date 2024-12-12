@@ -13,8 +13,13 @@ export class UserService {
 	async createUser(
 		data: AuthClientDto & { UserRole: Role; commission?: number }
 	) {
-		const { UserRole, ...profileData } = data
-		const hashedPassword = await hash(data.password)
+		const { UserRole, password, ...profileData } = data
+
+		if (!password) {
+			throw new Error('Password is required')
+		}
+
+		const hashedPassword = await hash(password)
 
 		if (UserRole === Role.REALTOR) {
 			const { commission = 0, ...realtorProfileData } = profileData
@@ -29,7 +34,7 @@ export class UserService {
 		}
 
 		if (UserRole !== Role.ADMIN && !profileData.email && !profileData.phone) {
-			throw new Error('Необходимо указать email или телефон')
+			throw new Error('Необ��одимо указать email или телефон')
 		}
 
 		return this.prisma.user.create({
@@ -136,18 +141,30 @@ export class UserService {
 		}
 
 		if (user.role === Role.CLIENT) {
+			if (!data.email && !data.phone) {
+				throw new Error('Необходимо указать email или телефон')
+			}
+
 			return this.prisma.clientProfile.update({
 				where: { userId: id },
 				data: {
-					firstName: data.firstName,
-					lastName: data.lastName,
-					middleName: data.middleName,
-					email: data.email,
-					phone: data.phone,
-					// добавьте другие поля, которые вы хотите обновить
+					firstName: data.firstName || undefined,
+					lastName: data.lastName || undefined,
+					middleName: data.middleName || undefined,
+					email: data.email || undefined,
+					phone: data.phone || undefined,
 				},
 			})
 		} else if (user.role === Role.REALTOR) {
+			if (
+				!data.firstName ||
+				!data.lastName ||
+				!data.email ||
+				!data.phone
+			) {
+				throw new Error('Все поля обязательны для риэлтора')
+			}
+
 			return this.prisma.realtorProfile.update({
 				where: { userId: id },
 				data: {
@@ -157,7 +174,6 @@ export class UserService {
 					email: data.email,
 					phone: data.phone,
 					commission: data.commission,
-					// добавьте другие поля, которые вы хотите обновить
 				},
 			})
 		}
@@ -166,12 +182,36 @@ export class UserService {
 	}
 
 	async deleteUser(id: string) {
-		await this.prisma.clientProfile.deleteMany({
-			where: { userId: id },
+		// Находим пользователя и его профиль
+		const user = await this.prisma.user.findUnique({
+			where: { id },
+			include: {
+				clientProfile: true,
+				realtorProfile: true
+			}
 		})
 
-		return this.prisma.user.delete({
-			where: { id },
+		if (!user) {
+			throw new Error('Пользователь не найден')
+		}
+
+		// Используем транзакцию для атомарного удаления
+		return this.prisma.$transaction(async (prisma) => {
+			// Удаляем профиль в зависимости от роли
+			if (user.role === Role.CLIENT) {
+				await prisma.clientProfile.delete({
+					where: { userId: id }
+				})
+			} else if (user.role === Role.REALTOR) {
+				await prisma.realtorProfile.delete({
+					where: { userId: id }
+				})
+			}
+
+			// Удаляем самого пользователя
+			return prisma.user.delete({
+				where: { id }
+			})
 		})
 	}
 
